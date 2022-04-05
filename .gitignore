@@ -1,6 +1,13 @@
 data
 processed_data
 
+# models and vocabs
+**/**/*.model
+**/**/*.vocab
+
+en_vocab
+ar_vocab
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
