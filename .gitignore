@@ -1,5 +1,6 @@
 data
 processed_data
+tools
 
 # models and vocabs
 **/**/*.model
@@ -7,6 +8,13 @@ processed_data
 
 en_vocab
 ar_vocab
+
+*.ar
+*.en
+
+nlp-venv/
+binarized/
+data-bin/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
