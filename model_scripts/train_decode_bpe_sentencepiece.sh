@@ -6,8 +6,8 @@ SRCS=(
 TGT=en
 
 ROOT=$(dirname "$0")
-DATA=$ROOT/splitted
-SCRIPTS=$ROOT/../../tools/fairseq/scripts
+DATA=$ROOT/../data/processed
+SCRIPTS=$ROOT/../tools/fairseq/scripts
 SPM_TRAIN=$SCRIPTS/spm_train.py
 SPM_ENCODE=$SCRIPTS/spm_encode.py
 BPESIZE=10000
@@ -15,8 +15,9 @@ BPESIZE=10000
 TRAIN_MINLEN=1  # remove sentences with <1 BPE token
 TRAIN_MAXLEN=250  # remove sentences with >250 BPE tokens
 
-mkdir sentencepieced
-DATA_OUT=$ROOT/sentencepieced
+mkdir $ROOT/../data/model_data
+mkdir $ROOT/../data/model_data/sentencepieced
+DATA_OUT=$ROOT/../data/model_data/sentencepieced
 
 # learn BPE with sentencepiece
 TRAIN_FILES=$(for SRC in "${SRCS[@]}"; do echo $DATA/train.${SRC}; echo $DATA/train.${TGT}; done | tr "\n" ",")
@@ -44,8 +45,8 @@ for SRC in "${SRCS[@]}"; do
     python "$SPM_ENCODE" \
         --model "$DATA_OUT/sentencepiece.bpe.model" \
         --output_format=piece \
-        --inputs $DATA/valid.${SRC} $DATA/valid.${TGT} \
-        --outputs $DATA_OUT/valid.bpe.${SRC} $DATA_OUT/valid.bpe.${TGT} 
+        --inputs $DATA/val.${SRC} $DATA/val.${TGT} \
+        --outputs $DATA_OUT/val.bpe.${SRC} $DATA_OUT/val.bpe.${TGT} 
 done
 
 echo "encoding test with learned BPE..."

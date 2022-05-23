@@ -1,6 +1,7 @@
 data
 processed_data
-tools
+tools/
+checkpoints/
 
 # models and vocabs
 **/**/*.model
