@@ -1,9 +1,11 @@
 #!/bin/bash
-
+MODEL_DATA=../data/model_data
+BIN=$MODEL_DATA/binarized
 mkdir -p checkpoints/lstm
+mkdir -p checkpoints/transformer_tiny
 
-fairseq-train binarized \
-  --arch lstm \
-  --encoder-dropout 0.2 --decoder-dropout 0.2 \
-  --optimizer adam --lr 0.005 --lr-shrink 0.5 \
-  --save-dir checkpoints/lstm
+fairseq-train $BIN \
+  --arch lstm --batch-size 128 \
+  --optimizer nag --lr 0.15 \
+  --save-dir checkpoints/lstm \
+  --clip-norm 0.1 --dropout 0.2 

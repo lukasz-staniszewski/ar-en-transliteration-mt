@@ -10,7 +10,7 @@ DATA=$ROOT/../data/processed
 SCRIPTS=$ROOT/../tools/fairseq/scripts
 SPM_TRAIN=$SCRIPTS/spm_train.py
 SPM_ENCODE=$SCRIPTS/spm_encode.py
-BPESIZE=10000
+BPESIZE=16000
 
 TRAIN_MINLEN=1  # remove sentences with <1 BPE token
 TRAIN_MAXLEN=250  # remove sentences with >250 BPE tokens
@@ -26,8 +26,9 @@ python "$SPM_TRAIN" \
     --input=$TRAIN_FILES \
     --model_prefix=$DATA_OUT/sentencepiece.bpe \
     --vocab_size=$BPESIZE \
-    --character_coverage=1.0 \
-    --model_type=bpe
+    --character_coverage=0.995 \
+    --model_type=bpe \
+    --shuffle_input_sentence=true
 
 # encode train/valid
 echo "encoding train with learned BPE..."

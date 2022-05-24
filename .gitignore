@@ -2,6 +2,8 @@ data
 processed_data
 tools/
 checkpoints/
+comet-venv/
+outs/
 
 # models and vocabs
 **/**/*.model

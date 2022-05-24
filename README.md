@@ -20,3 +20,10 @@ $ bash preprocess_fairseq.sh
 ```
 $ bash train_fairseq.sh
 ```
+
+5. Generate model predictions:
+```
+$ bash generate_fairseq.sh
+```
+
+6. To evaluate metrics go to notebooks/ and run metrics.ipynb
