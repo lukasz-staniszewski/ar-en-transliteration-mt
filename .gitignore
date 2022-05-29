@@ -4,6 +4,7 @@ tools/
 checkpoints/
 comet-venv/
 outs/
+comet-scores/
 
 # models and vocabs
 **/**/*.model
