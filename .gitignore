@@ -1,10 +1,14 @@
-data
-processed_data
-tools/
-checkpoints/
-comet-venv/
-outs/
-comet-scores/
+data/*/*.txt
+data/*/*.xml
+data/*/*.ids
+data/*/*.scores
+data/*/LICENSE
+data/*/README
+
+# data/processed
+# processed_data
+tools/*/
+checkpoints/*/
 
 # models and vocabs
 **/**/*.model
