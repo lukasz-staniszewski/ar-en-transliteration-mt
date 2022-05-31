@@ -2,12 +2,11 @@
 MODEL_DATA=../data/model_data
 BIN=$MODEL_DATA/binarized
 
-mkdir -p ./../checkpoints/lstm
-mkdir -p ./../checkpoints/transformer_tiny
-mkdir ./../logs/logs_$MODEL_NAME
+MODEL_NAME=lstm
+MODEL_NAME=transformer_tiny
 
-MODEL_NAME = lstm
-# MODEL_NAME = transformer_tiny
+mkdir ./../logs/logs_$MODEL_NAME
+mkdir -p ./../checkpoints/$MODEL_NAME
 
 fairseq-train $BIN \
   --arch $MODEL_NAME --batch-size 256 \

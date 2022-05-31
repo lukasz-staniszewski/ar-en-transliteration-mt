@@ -132,7 +132,7 @@ Ostatnim elementem niezbędnym do tego, aby można było wykorzystać otrzymane 
       Seed & 0 \\ \hline
       \end{tabularx}}
     {\caption[Hiperparametry dla architektur Tiny Transformer]{Hiperparametry dla architektur Tiny Transformer}
-      \label{val1}}
+      \label{tab:hpam_transformer}}
     \hfill%
     \ttabbox%
     {\begin{tabularx}{0.45\textwidth}{|c| *{1}{>{\centering\arraybackslash}X|}}
@@ -146,7 +146,7 @@ Ostatnim elementem niezbędnym do tego, aby można było wykorzystać otrzymane 
       Seed & 0 \\ \hline
       \end{tabularx}}
     {\caption[Hiperparametry dla architektur LSTM]{Hiperparametry dla architektur LSTM}
-      \label{val2}}
+      \label{tab:hpam_lstm}}
   \end{floatrow}
   \vspace*{1cm}
 \end{table}%
@@ -194,7 +194,7 @@ Ostatnim elementem niezbędnym do tego, aby można było wykorzystać otrzymane 
 
 \section{Ewaluacja}
     
-    Po wytrenowaniu obu modeli, zostały one ze sobą porównane pod względem skuteczności. W tym celu skorzystano z dwóch podstawowych automatycznych metryk do tłumaczenia maszynowego: chrF (character F-score) \cite{popovic-2015-chrf}, BLEU \cite{BLEU} oraz COMET \cite{COMET}.
+    Po wytrenowaniu obu modeli, zostały one ze sobą porównane pod względem skuteczności. W tym celu skorzystano z trzech podstawowych automatycznych metryk do tłumaczenia maszynowego: chrF (character F-score) \cite{popovic-2015-chrf}, BLEU \cite{BLEU} oraz COMET \cite{COMET}.
     
     % \begin{center}
 \begin{table}[H]
@@ -326,11 +326,75 @@ Warto również zwrócić uwagę na to jak modele radzą sobie ze zdaniami podrz
 
 \newpage
 
+\section{Współdzielenie zagnieżdżeń}
+\subsection{Przygotowanie danych}
+Dodatkowym badaniem przeprowadzonym w ramach projektu było porównanie dotychczas wytrenowanych modeli - LSTM w wersji podstawowej i LSTM poddane transliteracji - z tymi samymi modelami współdzielącymi zagnieżdżenia.\\
+
+Pierwszym działaniem w tym etapie było ponowne zbinaryzowanie danych tak, aby zbiory wejściowe i wyjściowe (w tym przypadku dwa różne systemy językowe) współdzieliły ten sam słownik, przez co też operowały na słownikach o tej samej wielkości. Dzięki takiemu działaniu możliwe było wykonanie treningu modeli ze współdzielonymi zagnieżdżeniami.
+\subsection{Trening}
+Po zdobyciu odpowiednich danych, oba modele (z architekturą LSTM - Autokoder z Atencją - dla modelu bazowego i dla modelu poddanego transliteracji) zostały wytrenowane na tych samych hiperparametrach jak te opisane w tabeli \ref{tab:hpam_lstm}. Takie podejście umożliwiło \textquotesingle lepsze\textquotesingle zbadanie wpływu współdzielenia zagnieżdżeń na tłumaczenie maszynowe. \\
+
+W trakcie uczenia każdego z modeli, spadek straty prezentował się w sposób przedstawiony niżej, gdzie na osi poziomej zaznaczono liczbę kroków, a na pionowej stratę. Tak samo jak poprzednio, trening dla modelu bez transliteracji został wykonany na dwukrotnie większym rozmiarze batch'a, stąd też liczba kroków na wykresie jest dwukrotnie mniejsza.
+    
+    \begin{figure*}[h]
+        \centering
+        \begin{subfigure}[b]{0.475\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{lstm_emb_basic.png}
+            \caption[Network2]%
+            {{\small Model bez transliteracji ze współdzielonymi zagnieżdżeniami - LSTM}}    
+            \label{fig:mean and std of net14}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.475\textwidth}  
+            \centering 
+            \includegraphics[width=\textwidth]{lstm_romanized_joined_loss.png}
+            \caption[]%
+            {{\small Model z transliteracją ze współdzielonymi zagnieżdżeniami - LSTM}}    
+            \label{fig:mean and std of net24}
+        \end{subfigure}
+        \vskip\baselineskip
+        \caption[ The average and standard deviation of critical parameters ]
+        {\small Strata obserwowana w trakcie uczenia każdego z modeli ze współdzielonymi zagnieżdżeniami, gdzie kolorem pomarańczowym zaznaczona jest strata na zbiorze treningowym, a niebieskim - na zbiorze walidacyjnym. } 
+        \label{fig:mean and std of nets}
+    \end{figure*}
+
+
+\subsection{Analiza wyników}
+
+Po wytrenowaniu modeli, zostały one porównane na tle modeli bez współdzielenia zagnieżdżeń względem skuteczności. Tak jak poprzednio, skorzystano z automatycznych metryk: chrF (character F-score) \cite{popovic-2015-chrf}, BLEU \cite{BLEU} oraz COMET \cite{COMET}.
+    
+    % \begin{center}
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{ |p{7cm}||p{2.5cm}|p{2.5cm}|p{2.5cm}|  }
+    \hline
+    \footnotesize{} & \footnotesize{BLEU} & \footnotesize{chrF}&  \footnotesize{COMET} \\
+    \hline
+     \textbf{Model LSTM bez współdzielenia zagnieżdżeń, bez transliteracji} & \textbf{21.45}  &  45.14  & \textbf{-0.02} \\
+     \hline
+     \textbf{Model LSTM bez współdzielenia zagnieżdżeń, z transliteracją} & 21.15  &  44.50  & -0.35 \\
+     \hline
+     \textbf{Model LSTM ze współdzielonymi zagnieżdżeniami, bez transliteracji} & 21.41  &  \textbf{45.18}  & \textbf{-0.02} \\
+     \hline
+     \textbf{Model LSTM ze współdzielonymi zagnieżdżeniami, z transliteracją} & 20.62 & 44.15 & -0.36 \\
+     \hline
+\end{tabular}
+\caption{Zmierzone wartości metryk dla modeli ze współdzielonymi zagnieżdżeniami na tle tych samych, bez współdzielonych zagnieżdżeń.}
+\label{tab:attr_table}
+\end{table}
+% \end{center}
+
+W każdym przypadku wyniki otrzymane dla modeli ze wpółdzielonymi zagnieżdżeniami nie dały lepszych rezultatów niż modele bez współdzielenia zagnieżdżeń. Nie są to jednak znaczące różnice. Niemniej jednak zabieg współdzielenia zagnieżdżeń w naszym przypadku nie pomógł w uzyskaniu lepszych wyników tłumaczenia. \\
+
+Przeprowadzenie tego eksperymentu miało potencjał w przypadku modelu z transliteracją, ze względu na możliwość łączenia słowników języków korzystających z tych samych alfabetów, co mogłoby ułatwić uczenie się modeli. Współdzielenie zagnieżdżeń mogłoby zmniejszyć złożoność modelu ze względu na odrzucenie wag modelu związanych z mapowaniami zagnieżdżeń jednego języka do drugiego.\\
+\newpage
 \section{Wnioski i podsumowanie}
 Jedną z hipotez dlaczego otrzymane zostały lepsze wyniki dla oryginalnych danych jest to, że w procesie transliteracji tracona jest nieco dokładność - w końcu użyte w tym projekcie narzędzie osiąga $90\%$ skuteczności. Transliteracja nieidealnym narzędziem może powodować stratę informacji, co może mieć wpływ na różnicę w wynikach obu modeli, skoro drugi z nich korzysta z oryginalnych danych.\\
 
 
-Wytrenowane w ramach projektu modele charakteryzują się tym, że potrafią wydobyć sens z tłumaczonego zdania, natomiast przy okazji wyniki translacji są bogate w liczne błędy gramatyczne. Wśród predykcji można zauważyć również zdolność modeli do upraszczania zdań, szczególnie w przypadku przymiotników, gdzie modele preferują przykładowo słowo straszny od słów przerażający i koszmarny. W trakcie analizowania wyników zauważono liczne błędy w predykcjach związane z zaimkami - jest to najprawdopodobniej związane z charakterystyką języka arabskiego, gdzie często w zdaniach pomijany jest podmiot.\\
+Wytrenowane w ramach projektu modele charakteryzują się tym, że potrafią wydobyć sens z tłumaczonego zdania, natomiast przy okazji wyniki translacji są bogate w liczne błędy gramatyczne. Wśród predykcji można zauważyć również zdolność modeli do upraszczania zdań i słów, szczególnie w przypadku przymiotników, gdzie modele preferują przykładowo słowo straszny od słów przerażający i koszmarny. W trakcie analizowania wyników zauważono liczne błędy w predykcjach związane z zaimkami - jest to najprawdopodobniej związane z charakterystyką języka arabskiego, gdzie często w zdaniach pomijany jest podmiot.\\
 
 
 W \cite{CCmatrix}, gdzie opisano konstruowanie korpusu CCMatrix, dla ewaluacji powstałego zbioru wytrenowano system tłumaczenia maszynowego na powstałym zbiorze, a następnie dokonano ewaluacji na tym samym zbiorze testowym, który został użyty w naszym projekcie. Dlatego też, wyniki otrzymane w artykule mogą posłużyć jako wyniki referencyjne w tym projekcie. Jak już wcześniej zostało to wspomniane, w referencyjnym rozwiązaniu zmierzona metryka BLEU wyniosła 28.7. Najlepszą wartość metryki BLEU w tym projekcie wystąpiła dla LSTM uczonego na zbiorze bez transliteracji i wyniosła ona 21.45. Zważając na to, że rozwiązanie referencyjne trenowane było na zbiorze 6.5 miliona zdań (ponad dwa razy większym od naszego), a także wybrana w tym projekcie architektura sieci neuronowej - Autokoder z Atencją - nie stanowi state-of-art w tłumaczeniu maszynowym, wyniki można uznać za zadowalające.

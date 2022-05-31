@@ -3,6 +3,7 @@ import pandas as pd
 
 MODEL_NAME = "lstm"
 # MODEL_NAME = "transformer_tiny"
+MODEL_NAME = "lstm_share_emb"
 
 GENERATIONS_FILE_PATH = (
     "./../predictions/outs_" + MODEL_NAME + "/generate-test.txt"
