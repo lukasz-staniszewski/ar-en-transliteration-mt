@@ -2,7 +2,8 @@
 MODEL_DATA=../data/model_data
 BIN=$MODEL_DATA/binarized
 
-MODEL_NAME = lstm
+MODEL_NAME=lstm
+MODEL_NAME=transformer_tiny
 
 mkdir ./../logs/logs_$MODEL_NAME
 mkdir -p ./../checkpoints/$MODEL_NAME
